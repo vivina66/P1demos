@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .box {
+            width: 369px;
+            height: 500px;
+            margin-left: 400px;
+            margin-top: 100px;
+            background-color: rgb(92, 105, 109);
+            padding: 30px;
+            border-radius: 20px;
+        }
+        
+        .screen {
+            width: 349px;
+            height: 80px;
+            /* line-height: 80px; */
+            font-size: 32px;
+            font-weight: 600;
+            background-color: #fff;
+            text-align: end;
+            padding: 10px;
+            padding-bottom: 2px;
+            border-radius: 10px;
+        }
+        
+        .minScreen {
+            height: 30px;
+            width: 349px;
+            font-size: 20px;
+        }
+        
+        .btnBox {
+            width: 100%;
+            height: 380px;
+            margin-top: 40px;
+        }
+        
+        .btnRow {
+            height: 70px;
+            background-color: #fff;
+            margin-top: 5px;
+            border: 1px solid;
+            text-align: center;
+            line-height: 70px;
+            background-color: rgb(92, 105, 109);
+        }
+        
+        .btnRow span {
+            display: inline-block;
+            width: 88px;
+            height: 100%;
+            color: #fff;
+            background-color: rgb(60, 70, 64);
+        }
+        
+        .btnRow span:hover {
+            background-color: orange;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="box">
+            <div v-cloak class="screen">
+                <div v-cloak class="minScreen">{{num2}}</div>
+                {{num1}}</div>
+            <div class="btnBox" @click='handle'>
+                <div class="btnRow">
+                    <span>(</span>
+                    <span>)</span>
+                    <span>%</span>
+                    <span>C</span>
+                </div>
+                <div class="btnRow">
+                    <span>7</span>
+                    <span>8</span>
+                    <span>9</span>
+                    <span>/</span>
+                </div>
+                <div class="btnRow">
+                    <span>4</span>
+                    <span>5</span>
+                    <span>6</span>
+                    <span>*</span>
+                </div>
+                <div class="btnRow">
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>-</span>
+                </div>
+                <div class="btnRow">
+                    <span>0</span>
+                    <span>.</span>
+                    <span>=</span>
+                    <span>+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="./public/vue.js"></script>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                num1: '',
+                num2: '',
+                preNum: '',
+                Num: ''
+
+            },
+            methods: {
+                handle: function(event) {
+                    this.preNum = this.Num
+                    this.Num = event.target.innerText
+                    if (this.preNum == '=') {
+                        this.num1 = ''
+                        this.num2 = ''
+                    }
+
+                    try {
+                        if (this.num1 == '') { // 第一次输入数据
+                            // isNaN(parseInt(a))判断是否为数字
+                            if (this.Num == '(' || !isNaN(parseInt(this.Num))) {
+                                this.num1 += this.Num
+                            }
+
+                        } else if (this.Num == 'C') {
+                            this.num1 = ''
+                            this.num2 = ''
+                        } else if (this.Num == ')') {
+                            if (this.num1.indexOf('(') != -1 && this.preNum != '(') {
+                                this.num1 += this.Num
+                            }
+
+                        } else if (this.Num == '=') {
+                            if (this.num1.indexOf('(') != -1 && this.num1.indexOf(')') == -1) {
+                                this.num1 += ')'
+                                this.num2 = this.num1
+                                this.num1 = eval(this.num1)
+                            } else {
+                                this.num2 = this.num1
+                                this.num1 = eval(this.num1)
+                            }
+                        } else {
+                            this.num1 += this.Num
+                        }
+                    } catch (error) {
+                        this.num2 = ''
+                        this.num1 = 'error'
+                    }
+
+
+                },
+            }
+        })
+    </script>
+</body>
+
+</html>
